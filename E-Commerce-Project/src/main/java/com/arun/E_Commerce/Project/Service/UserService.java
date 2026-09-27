@@ -27,17 +27,18 @@ public class UserService {
 
     public String updateUser(User user){
         User exsistingUser = userDAO.findByEmail(user.getEmail());
+        if(exsistingUser == null){
+            return "User Not Found";
+        }
         exsistingUser.setPhone(user.getPhone());
         exsistingUser.setAddress(user.getAddress());
         exsistingUser.setName(user.getName());
-        exsistingUser.setPassword(user.getPassword());
-        exsistingUser.setRole(user.getRole());
         userDAO.save(exsistingUser);
         return "User Updated";
     }
 
     public String deleteUser(int id){
         userDAO.deleteById(id);
-        return "User Updated";
+        return "User Deleted";
     }
 }
