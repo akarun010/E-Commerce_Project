@@ -1,16 +1,24 @@
 package com.arun.E_Commerce.Project.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.math.BigDecimal;
 
 @Entity
-@Data
+@Getter @Setter
+@ToString(exclude = {"order", "product"})
 public class OrderItem {
-    @Id
-    private int id;
-    private int orderId;
-    private int productId;
+    @Id @GeneratedValue
+    private Integer id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
     private int quantity;
-    private double price;
+    private BigDecimal price;
 }

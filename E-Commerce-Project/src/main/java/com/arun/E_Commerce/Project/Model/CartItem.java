@@ -1,15 +1,21 @@
 package com.arun.E_Commerce.Project.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Data
+@Getter @Setter
+@ToString(exclude = {"cart","product"})
 public class CartItem {
-    @Id
-    private int id;
-    private int cartId;
-    private int productId;
+    @Id @GeneratedValue
+    private Integer id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
     private int quantity;
 }
