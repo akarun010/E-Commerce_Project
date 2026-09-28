@@ -9,7 +9,7 @@ The project provides APIs for managing users, categories, products, shopping car
 ## 🚀 Features
 
 * User management
-* Category management
+* Category management 
 * Product management
 * Shopping cart management 
 * Add/update/remove cart items
