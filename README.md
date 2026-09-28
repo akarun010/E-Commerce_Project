@@ -11,7 +11,7 @@ The project provides APIs for managing users, categories, products, shopping car
 * User management
 * Category management
 * Product management
-* Shopping cart management
+* Shopping cart management 
 * Add/update/remove cart items
 * Order creation and management
 * Automatic order total calculation
