@@ -33,10 +33,15 @@ public class OrderService {
             for(CartItem c : cartItem){
                 Product product = c.getProduct();
                 int quantity = c.getQuantity();
-                BigDecimal price = product.getPrice();
-                BigDecimal itemTotal = price.multiply(BigDecimal.valueOf(quantity));
-                total = total.add(itemTotal);
-                order.setAmount(total);
+                if(quantity <= product.getQuantity()){
+                    BigDecimal price = product.getPrice();
+                    BigDecimal itemTotal = price.multiply(BigDecimal.valueOf(quantity));
+                    total = total.add(itemTotal);
+                    order.setAmount(total);
+                }
+                else{
+                    return "Insufficient Stock";
+                }
             }
             order.setUser(cart.getUser());
             order.setIssuedDate(LocalDate.now());
