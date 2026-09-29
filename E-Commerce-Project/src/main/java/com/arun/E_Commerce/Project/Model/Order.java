@@ -1,5 +1,6 @@
 package com.arun.E_Commerce.Project.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,5 +25,6 @@ public class Order {
     private String status;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonBackReference
     private List<OrderItem> orderItems = new ArrayList<>();
 }

@@ -1,5 +1,6 @@
 package com.arun.E_Commerce.Project.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @ToString(exclude = "products")
+@Table(name = "categories")
 public class Category {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -18,5 +20,6 @@ public class Category {
     private String description;
 
     @OneToMany(mappedBy = "category",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonBackReference
     private List<Product> products = new ArrayList<>();
 }
