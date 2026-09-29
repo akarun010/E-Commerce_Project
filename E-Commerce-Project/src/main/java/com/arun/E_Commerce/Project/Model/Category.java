@@ -1,6 +1,6 @@
 package com.arun.E_Commerce.Project.Model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +20,6 @@ public class Category {
     private String description;
 
     @OneToMany(mappedBy = "category",cascade = CascadeType.ALL,orphanRemoval = true)
-    @JsonBackReference
+    @JsonManagedReference("category-products")
     private List<Product> products = new ArrayList<>();
 }

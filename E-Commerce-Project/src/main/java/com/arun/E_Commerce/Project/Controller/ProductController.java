@@ -29,6 +29,6 @@ public class ProductController {
 
     @PutMapping("/product")
     public String updateProduct(@RequestBody Product product){
-        return productService.createProduct(product);
+        return productService.updateProduct(product);
     }
 }
