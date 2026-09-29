@@ -14,7 +14,7 @@ import java.util.List;
 @Getter @Setter
 @ToString(exclude = {"cartItems", "orderItems", "category"})
 public class Product {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String description;

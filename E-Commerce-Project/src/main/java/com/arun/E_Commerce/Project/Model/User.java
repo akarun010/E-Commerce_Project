@@ -12,7 +12,7 @@ import java.util.List;
 @Getter @Setter
 @ToString(exclude = {"orders", "cart"})
 public class User {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String email;

@@ -14,7 +14,7 @@ import java.util.List;
 @Getter @Setter
 @ToString(exclude = {"user", "orderItems"})
 public class Order {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

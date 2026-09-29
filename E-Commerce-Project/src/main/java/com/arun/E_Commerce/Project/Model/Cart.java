@@ -12,7 +12,7 @@ import java.util.List;
 @Getter @Setter
 @ToString(exclude = {"user","cartItems"})
 public class Cart {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @OneToOne
     @JoinColumn(name = "user_id")

@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Getter @Setter
 @ToString(exclude = {"order", "product"})
 public class OrderItem {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
