@@ -15,6 +15,7 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @ToString(exclude = {"user", "orderItems"})
+@Table(name = "orders")
 public class Order {
 
     @Id

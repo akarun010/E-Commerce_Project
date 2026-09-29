@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @ToString(exclude = {"order", "product"})
-@Table(name = "orders")
+@Table(name = "orderItems")
 public class OrderItem {
 
     @Id

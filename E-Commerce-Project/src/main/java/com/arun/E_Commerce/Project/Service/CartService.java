@@ -28,8 +28,10 @@ public class CartService {
     public String addToCart(int productId, int cartId, int quantity){
         Cart cart = cartDAO.findById(cartId).orElse(null);
         Product product = productDAO.findById(productId).orElse(null);
+        System.out.println("CART = " + cart);
+        System.out.println("PRODUCT = " + product);
         if(cart != null && product != null && quantity > 0 && quantity <= product.getQuantity()){
-            CartItem existingCartItem = cartItemDAO.findByProductExistsAndCart(product, cart);
+            CartItem existingCartItem = cartItemDAO.findByProductAndCart(product, cart);
             if(existingCartItem == null){
                 CartItem cartItem = new CartItem();
                 cartItem.setProduct(product);

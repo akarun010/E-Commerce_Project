@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface CartItemDAO extends JpaRepository<CartItem, Integer> {
-    CartItem findByProductExistsAndCart(Product product, Cart cart);
+    CartItem findByProductAndCart(Product product, Cart cart);
 
     List<CartItem> findAllByCartId(int cartId);
 }

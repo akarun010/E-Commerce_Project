@@ -12,6 +12,7 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @ToString(exclude = {"orders", "cart"})
+@Table(name = "users")
 public class User {
 
     @Id
