@@ -13,12 +13,14 @@ import java.util.List;
 public class UserService {
     @Autowired
     private UserDAO userDAO;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
     public String createUser(User user){
         Cart cart = new Cart();
         cart.setUser(user);
         user.setCart(cart);
 
-        user.setPassword(new BCryptPasswordEncoder(12).encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDAO.save(user);
         return "User Created";
     }
