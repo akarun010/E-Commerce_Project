@@ -4,6 +4,7 @@ import com.arun.E_Commerce.Project.DAO.UserDAO;
 import com.arun.E_Commerce.Project.Model.Cart;
 import com.arun.E_Commerce.Project.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class UserService {
         cart.setUser(user);
         user.setCart(cart);
 
+        user.setPassword(new BCryptPasswordEncoder(12).encode(user.getPassword()));
         userDAO.save(user);
         return "User Created";
     }
