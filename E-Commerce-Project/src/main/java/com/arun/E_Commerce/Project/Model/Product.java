@@ -36,10 +36,10 @@ public class Product {
     private LocalDate createdAt;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference("orderItem-products")
+    @JsonManagedReference("orderItem-products")
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference("cartItem-products")
+    @JsonManagedReference("cartItem-products")
     private List<CartItem> cartItems = new ArrayList<>();
 }

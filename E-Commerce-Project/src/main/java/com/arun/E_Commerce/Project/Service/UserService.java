@@ -1,6 +1,7 @@
 package com.arun.E_Commerce.Project.Service;
 
 import com.arun.E_Commerce.Project.DAO.UserDAO;
+import com.arun.E_Commerce.Project.Model.Cart;
 import com.arun.E_Commerce.Project.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,11 @@ import java.util.List;
 public class UserService {
     @Autowired
     private UserDAO userDAO;
-
     public String createUser(User user){
+        Cart cart = new Cart();
+        cart.setUser(user);
+        user.setCart(cart);
+
         userDAO.save(user);
         return "User Created";
     }

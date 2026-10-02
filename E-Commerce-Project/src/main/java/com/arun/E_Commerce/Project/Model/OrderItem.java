@@ -1,6 +1,7 @@
 package com.arun.E_Commerce.Project.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,5 +31,6 @@ public class OrderItem {
     private Product product;
 
     private int quantity;
+
     private BigDecimal price;
 }
