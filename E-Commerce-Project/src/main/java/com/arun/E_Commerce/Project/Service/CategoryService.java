@@ -35,4 +35,13 @@ public class CategoryService {
         }
         return "Category Is Not Found";
     }
+
+    public String deleteCategory(int id){
+        Category existingCategory = categoryDAO.findById(id).orElse(null);
+        if(existingCategory != null){
+            categoryDAO.delete(existingCategory);
+            return "Category Is Deleted";
+        }
+        return "Category Is Not Found";
+    }
 }
