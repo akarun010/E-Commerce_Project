@@ -4,6 +4,8 @@ import com.arun.E_Commerce.Project.DAO.UserDAO;
 import com.arun.E_Commerce.Project.Model.Cart;
 import com.arun.E_Commerce.Project.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +27,14 @@ public class UserService {
         return "User Created";
     }
 
-    public User getUserById(int id){
-        return userDAO.findById(id).orElse(null);
+    public User getUserById(int userId){
+        User user = getAuthUser();
+        if(user.getRole().equals("USER") && userId == user.getId()){
+            return user;
+        } else if(user.getRole().equals("ADMIN")){
+            return userDAO.findById(userId).orElse(null);
+        }
+        return null;
     }
 
     public List<User> getAllUsers(){
@@ -48,5 +56,11 @@ public class UserService {
     public String deleteUser(int id){
         userDAO.deleteById(id);
         return "User Deleted";
+    }
+
+    public User getAuthUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return userDAO.findByEmail(email);
     }
 }
