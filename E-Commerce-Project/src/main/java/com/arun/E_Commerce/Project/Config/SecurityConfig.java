@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(HttpMethod.POST,"/product","/category").hasRole("ADMIN").
-                                requestMatchers(HttpMethod.PUT,"/product").hasRole("ADMIN").
+                                requestMatchers(HttpMethod.PUT,"/product", "/category/**").hasRole("ADMIN").
                                 requestMatchers(HttpMethod.DELETE,"/product/**").hasRole("ADMIN").
                                 requestMatchers(HttpMethod.POST,"/login").permitAll().
                         anyRequest().authenticated())

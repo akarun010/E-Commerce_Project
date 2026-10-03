@@ -25,8 +25,14 @@ public class CategoryService {
         return categoryDAO.findAll();
     }
 
-    public String updateCategory(Category category){
-        categoryDAO.save(category);
-        return "Category Updated";
+    public String updateCategory(Category category, int id){
+        Category existingCategory = categoryDAO.findById(id).orElse(null);
+        if(existingCategory != null){
+            existingCategory.setDescription(category.getDescription());
+            existingCategory.setName(category.getName());
+            categoryDAO.save(existingCategory);
+            return "Category Is Updated";
+        }
+        return "Category Is Not Found";
     }
 }
