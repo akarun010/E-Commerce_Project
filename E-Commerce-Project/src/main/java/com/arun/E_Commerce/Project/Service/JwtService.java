@@ -1,15 +1,14 @@
 package com.arun.E_Commerce.Project.Service;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,17 +16,8 @@ import java.util.Map;
 @Service
 public class JwtService {
 
-    String key = "";
-    public JwtService() {
-        try {
-            KeyGenerator generator = KeyGenerator.getInstance("HmacSHA256");
-            SecretKey secretKey = generator.generateKey();
-            key = Base64.getEncoder().encodeToString(secretKey.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
+    @Value("${jwt.secret}")
+    String key;
 
     public String generateToken(String email){
         Map<String, Object> claims = new HashMap<>();
@@ -35,7 +25,7 @@ public class JwtService {
                 .claims(claims)
                 .subject(email)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 60))
+                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000))
                 .signWith(getKey())
                 .compact();
     }
@@ -45,4 +35,12 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    public String extractToken(String token){
+        Claims claims = Jwts.parser()
+                .verifyWith((SecretKey) getKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return claims.getSubject();
+    }
 }
