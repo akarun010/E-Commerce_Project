@@ -28,9 +28,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http){
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(HttpMethod.POST,"/users", "/product", "/login").permitAll().
+                        auth.requestMatchers(HttpMethod.POST,"/product","/category").hasRole("ADMIN").
+                                requestMatchers(HttpMethod.PUT,"/product").hasRole("ADMIN").
+                                requestMatchers(HttpMethod.DELETE,"/product/**").hasRole("ADMIN").
+                                requestMatchers(HttpMethod.POST,"/login").permitAll().
                         anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

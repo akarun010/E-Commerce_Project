@@ -24,4 +24,9 @@ public class CategoryService {
     public List<Category> getAllCategories(){
         return categoryDAO.findAll();
     }
+
+    public String updateCategory(Category category){
+        categoryDAO.save(category);
+        return "Category Updated";
+    }
 }

@@ -31,4 +31,7 @@ public class ProductController {
     public String updateProduct(@RequestBody Product product){
         return productService.updateProduct(product);
     }
+
+    @DeleteMapping("/product/{productId}")
+    public String deleteProduct(@PathVariable int productId){ return productService.deleteProduct(productId); };
 }
