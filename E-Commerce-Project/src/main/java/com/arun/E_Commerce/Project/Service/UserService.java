@@ -1,9 +1,12 @@
 package com.arun.E_Commerce.Project.Service;
 
 import com.arun.E_Commerce.Project.DAO.UserDAO;
+import com.arun.E_Commerce.Project.Exception.UnauthorizedAccessException;
 import com.arun.E_Commerce.Project.Model.Cart;
 import com.arun.E_Commerce.Project.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,14 +30,14 @@ public class UserService {
         return "User Created";
     }
 
-    public User getUserById(int userId){
+    public ResponseEntity<User> getUserById(int userId){
         User user = getAuthUser();
         if(user.getRole().equals("USER") && userId == user.getId()){
-            return user;
+            return new ResponseEntity<>(user, HttpStatus.OK);
         } else if(user.getRole().equals("ADMIN")){
-            return userDAO.findById(userId).orElse(null);
+            return new ResponseEntity<>(userDAO.findById(userId).orElse(null), HttpStatus.OK);
         }
-        return null;
+        throw new UnauthorizedAccessException("You are not allowed to access this user");
     }
 
     public List<User> getAllUsers(){

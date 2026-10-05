@@ -3,6 +3,7 @@ package com.arun.E_Commerce.Project.Controller;
 import com.arun.E_Commerce.Project.Model.User;
 import com.arun.E_Commerce.Project.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}")
-    public User getUserById(@PathVariable int userId){
+    public ResponseEntity<User> getUserById(@PathVariable int userId){
         return userService.getUserById(userId);
     }
 
