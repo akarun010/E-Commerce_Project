@@ -3,6 +3,7 @@ package com.arun.E_Commerce.Project.Controller;
 import com.arun.E_Commerce.Project.Model.Cart;
 import com.arun.E_Commerce.Project.Service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,12 +12,12 @@ public class CartController {
     CartService cartService;
 
     @GetMapping("/cart/{cartId}")
-    public Cart viewCart(@PathVariable int cartId){
+    public ResponseEntity<Cart> viewCart(@PathVariable int cartId){
         return cartService.viewCart(cartId);
     }
 
     @PostMapping("/cart/{cartId}/product/{productId}/quantity/{quantity}")
-    public String addToCart(
+    public ResponseEntity<String> addToCart(
             @PathVariable("cartId") int cartId,
             @PathVariable("quantity") int quantity,
             @PathVariable("productId") int productId
