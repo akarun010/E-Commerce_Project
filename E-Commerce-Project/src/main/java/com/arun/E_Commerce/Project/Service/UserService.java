@@ -44,16 +44,26 @@ public class UserService {
         return userDAO.findAll();
     }
 
-    public String updateUser(User user){
-        User exsistingUser = userDAO.findByEmail(user.getEmail());
-        if(exsistingUser == null){
-            return "User Not Found";
+    public ResponseEntity<String> updateUser(User user){
+        User existingUser = getAuthUser();
+        if(existingUser.getRole().equals("USER") && existingUser.getId() == user.getId()){
+            existingUser.setPhone(user.getPhone());
+            existingUser.setAddress(user.getAddress());
+            existingUser.setName(user.getName());
+            userDAO.save(existingUser);
+            return new ResponseEntity<>("User Updated", HttpStatus.OK);
+        } else if(existingUser.getRole().equals("ADMIN")){
+            User targetUser = userDAO.findById(user.getId()).orElse(null);
+            if(targetUser != null){
+                targetUser.setPhone(user.getPhone());
+                targetUser.setAddress(user.getAddress());
+                targetUser.setName(user.getName());
+                userDAO.save(targetUser);
+                return new ResponseEntity<>("User Updated", HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Couldn't Find User", HttpStatus.NOT_FOUND);
         }
-        exsistingUser.setPhone(user.getPhone());
-        exsistingUser.setAddress(user.getAddress());
-        exsistingUser.setName(user.getName());
-        userDAO.save(exsistingUser);
-        return "User Updated";
+        throw new UnauthorizedAccessException("You are not allowed to access this user");
     }
 
     public String deleteUser(int id){
