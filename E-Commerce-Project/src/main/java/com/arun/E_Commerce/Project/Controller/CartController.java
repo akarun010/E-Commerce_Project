@@ -26,12 +26,12 @@ public class CartController {
     }
 
     @PutMapping("/cart/{cartItemId}/quantity/{quantity}")
-    public String updateQuantity(@PathVariable("cartItemId") int cartItemId, @PathVariable("quantity") int quantity){
+    public ResponseEntity<String> updateQuantity(@PathVariable("cartItemId") int cartItemId, @PathVariable("quantity") int quantity){
         return cartService.updateQuantity(cartItemId, quantity);
     }
 
     @DeleteMapping("/cart/{cartItemId}")
-    public String deleteCartItem(@PathVariable int cartItemId){
+    public ResponseEntity<String> deleteCartItem(@PathVariable int cartItemId){
         return cartService.deleteCartItem(cartItemId);
     }
 }

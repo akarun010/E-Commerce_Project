@@ -62,23 +62,33 @@ public class CartService {
         throw new UnauthorizedAccessException("You are not allowed to add to this cart");
     }
 
-    public String updateQuantity(int cartItemId, int quantity){
-        CartItem cartItem = cartItemDAO.findById(cartItemId).orElse(null);
-        if(cartItem != null && quantity > 0 && quantity <= cartItem.getProduct().getQuantity()){
-            cartItem.setQuantity(quantity);
-            cartItemDAO.save(cartItem);
-            return "Quantity Updated";
-        }
-        return "Cart Item Not Found";
-    }
-
-    public String deleteCartItem(int cartItemId){
+    public ResponseEntity<String> updateQuantity(int cartItemId, int quantity){
+        User user = getAuthUser();
         CartItem cartItem = cartItemDAO.findById(cartItemId).orElse(null);
         if(cartItem == null){
-            return "Cart Item Doesn't Exist";
+            return new ResponseEntity<>("Cart Item Doesn't Exist",HttpStatus.NOT_FOUND);
         }
-        cartItemDAO.deleteById(cartItemId);
-        return "Cart Item Deleted";
+        if(user.getRole().equals("ADMIN")) {
+            return new ResponseEntity<>(handleUpdateCart(quantity, cartItem), HttpStatus.OK);
+        } else if(user.getRole().equals("USER") && user.getId().equals(cartItem.getCart().getUser().getId())){
+            return new ResponseEntity<>(handleUpdateCart(quantity, cartItem), HttpStatus.OK);
+        }
+        throw new UnauthorizedAccessException("You are not allowed to update this cart");
+    }
+
+    public ResponseEntity<String> deleteCartItem(int cartItemId){
+        User user = getAuthUser();
+        CartItem cartItem = cartItemDAO.findById(cartItemId).orElse(null);
+        if(cartItem == null){
+            return new ResponseEntity<>("Cart Item Doesn't Exist", HttpStatus.NOT_FOUND);
+        } if(user.getRole().equals("ADMIN")){
+            cartItemDAO.deleteById(cartItemId);
+            return new ResponseEntity<>("Cart Item Deleted", HttpStatus.OK);
+        } else if(user.getRole().equals("USER") && user.getId().equals(cartItem.getCart().getUser().getId())){
+            cartItemDAO.deleteById(cartItemId);
+            return new ResponseEntity<>("Cart Item Deleted", HttpStatus.OK);
+        }
+        throw new UnauthorizedAccessException("You are not allowed to delete this cart");
     }
 
     public User getAuthUser(){
@@ -109,5 +119,14 @@ public class CartService {
             return "Cart Added";
         }
         return "Couldn't Add To Cart";
+    }
+
+    public String handleUpdateCart(int quantity, CartItem cartItem){
+        if(quantity > 0 && quantity <= cartItem.getProduct().getQuantity()){
+            cartItem.setQuantity(quantity);
+            cartItemDAO.save(cartItem);
+            return "Quantity Updated";
+        }
+        return "Invalid Quantity";
     }
 }
