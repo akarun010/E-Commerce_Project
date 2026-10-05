@@ -46,7 +46,7 @@ public class UserService {
 
     public ResponseEntity<String> updateUser(User user){
         User existingUser = getAuthUser();
-        if(existingUser.getRole().equals("USER") && existingUser.getId() == user.getId()){
+        if(existingUser.getRole().equals("USER") && existingUser.getId().equals(user.getId())){
             existingUser.setPhone(user.getPhone());
             existingUser.setAddress(user.getAddress());
             existingUser.setName(user.getName());
@@ -66,9 +66,16 @@ public class UserService {
         throw new UnauthorizedAccessException("You are not allowed to access this user");
     }
 
-    public String deleteUser(int id){
-        userDAO.deleteById(id);
-        return "User Deleted";
+    public ResponseEntity<String> deleteUser(int userId){
+        User user = getAuthUser();
+        if(user.getRole().equals("USER") && userId == user.getId()){
+            userDAO.deleteById(userId);
+            return new ResponseEntity<>("User Deleted", HttpStatus.OK);
+        } else if(user.getRole().equals("ADMIN")){
+            userDAO.deleteById(userId);
+            return new ResponseEntity<>("User Deleted", HttpStatus.OK);
+        }
+        throw new UnauthorizedAccessException("You are not allowed to access this user");
     }
 
     public User getAuthUser(){
