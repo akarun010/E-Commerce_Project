@@ -1,9 +1,14 @@
 package com.arun.E_Commerce.Project.Service;
 
 import com.arun.E_Commerce.Project.DAO.*;
+import com.arun.E_Commerce.Project.Exception.UnauthorizedAccessException;
 import com.arun.E_Commerce.Project.Model.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -22,6 +27,8 @@ public class OrderService {
     OrderItemDAO orderItemDAO;
     @Autowired
     ProductDAO productDAO;
+    @Autowired
+    private UserDAO userDAO;
 
     @Transactional
     public String createOrder(int cartId){
@@ -66,11 +73,31 @@ public class OrderService {
         return "Cart Is Empty";
     }
 
-    public Order getOrderById(int orderId){
-        return orderDAO.findById(orderId).orElse(null);
+    public ResponseEntity<Order> getOrderById(int orderId){
+        Order order = orderDAO.findById(orderId).orElse(null);
+        User user = getAuthUser();
+        if(order == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if(user.getRole().equals("USER") && user.getId().equals(order.getUser().getId())){
+            return new ResponseEntity<>(order, HttpStatus.OK);
+        } else if(user.getRole().equals("ADMIN")){
+            return new ResponseEntity<>(order, HttpStatus.OK);
+        }
+        throw new UnauthorizedAccessException("You are not allowed to access this order");
     }
 
-    public List<Order> getAllOrders(){
-        return orderDAO.findAll();
+    public ResponseEntity<List<Order>> getAllOrders(){
+        User user = getAuthUser();
+        if(user.getRole().equals("ADMIN")){
+            return new ResponseEntity<>(orderDAO.findAll(), HttpStatus.OK);
+        }
+        throw new UnauthorizedAccessException("You are not allowed to access all the orders");
+    }
+
+    public User getAuthUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return userDAO.findByEmail(email);
     }
 }
