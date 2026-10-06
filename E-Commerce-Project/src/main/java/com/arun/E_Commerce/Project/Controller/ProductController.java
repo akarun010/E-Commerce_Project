@@ -2,6 +2,7 @@ package com.arun.E_Commerce.Project.Controller;
 
 import com.arun.E_Commerce.Project.Model.Product;
 import com.arun.E_Commerce.Project.Service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ public class ProductController {
     ProductService productService;
 
     @PostMapping("/product")
-    public String createProduct(@RequestBody Product product){
+    public String createProduct(@RequestBody @Valid Product product){
         return productService.createProduct(product);
     }
 
@@ -28,7 +29,7 @@ public class ProductController {
     }
 
     @PutMapping("/product")
-    public String updateProduct(@RequestBody Product product){
+    public String updateProduct(@RequestBody @Valid Product product){
         return productService.updateProduct(product);
     }
 
