@@ -97,7 +97,7 @@ public class CartService {
         return userDAO.findByEmail(email);
     }
 
-    public String handleAddCart(Cart cart, int productId, int quantity){
+    public String handleAddCart(Cart cart, int productId, Integer quantity){
         Product product = productDAO.findById(productId).orElse(null);
         if(cart != null && product != null && quantity > 0 && quantity <= product.getQuantity()){
             CartItem existingCartItem = cartItemDAO.findByProductAndCart(product, cart);

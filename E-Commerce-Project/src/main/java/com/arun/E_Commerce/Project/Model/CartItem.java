@@ -1,8 +1,9 @@
 package com.arun.E_Commerce.Project.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -26,5 +27,7 @@ public class CartItem {
     @JsonBackReference("cartItem-products")
     private Product product;
 
-    private int quantity;
+    @NotNull(message = "Quantity Can't Be Empty")
+    @Positive(message = "Quantity Must Be Greater Than 0")
+    private Integer quantity;
 }
