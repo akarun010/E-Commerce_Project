@@ -3,6 +3,7 @@ package com.arun.E_Commerce.Project.Model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -27,8 +28,13 @@ public class Order {
     @JsonBackReference("user-orders")
     private User user;
 
+    @Digits(fraction = 2, integer = 6, message = "Invalid Amount")
+    @NotNull(message = "Amount Can't Be Empty")
+    @Positive(message = "Amount Must Be A Positive Value")
     private BigDecimal amount;
     private LocalDate issuedDate;
+    @NotBlank(message = "Order Status Can't Be Empty")
+    @Size(min = 5, max = 30, message = "Order Status Must Between 5 And 30 Characters")
     private String status;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)

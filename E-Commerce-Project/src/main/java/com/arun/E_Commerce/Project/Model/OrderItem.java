@@ -3,6 +3,9 @@ package com.arun.E_Commerce.Project.Model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -30,7 +33,12 @@ public class OrderItem {
     @JsonBackReference("orderItem-products")
     private Product product;
 
-    private int quantity;
+    @NotNull(message = "Quantity Can't Be Empty")
+    @Positive(message = "Quantity Must Be Greater Than 0")
+    private Integer quantity;
 
+    @Digits(fraction = 2, integer = 6, message = "Invalid Price")
+    @NotNull(message = "Price Can't Be Empty")
+    @Positive(message = "Price Must Be A Positive Value")
     private BigDecimal price;
 }
