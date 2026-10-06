@@ -2,6 +2,7 @@ package com.arun.E_Commerce.Project.Controller;
 
 import com.arun.E_Commerce.Project.Model.Category;
 import com.arun.E_Commerce.Project.Service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ public class CategoryController {
     CategoryService categoryService;
 
     @PostMapping("/category")
-    public String createCategory(@RequestBody Category category){
+    public String createCategory(@RequestBody @Valid Category category){
         return categoryService.createCategory(category);
     }
 
@@ -28,7 +29,7 @@ public class CategoryController {
    }
 
    @PutMapping("/category/{categoryId}")
-    public String updateCategory(@RequestBody Category category, @PathVariable int categoryId){
+    public String updateCategory(@RequestBody @Valid Category category, @PathVariable int categoryId){
         return categoryService.updateCategory(category,categoryId);
     };
 

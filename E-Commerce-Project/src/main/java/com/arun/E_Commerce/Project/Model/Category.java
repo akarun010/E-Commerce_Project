@@ -2,6 +2,8 @@ package com.arun.E_Commerce.Project.Model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,7 +18,11 @@ import java.util.List;
 public class Category {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @NotBlank(message = "Category Name Can't Be Empty")
+    @Size(min = 2, max = 40, message = "Category Name Must Between 2 And 40 Characters")
     private String name;
+    @NotBlank(message = "Category Description  Can't Be Empty")
+    @Size(min = 10, max = 60, message = "Category Description Must Between 10 And 60 Characters")
     private String description;
 
     @OneToMany(mappedBy = "category",cascade = CascadeType.ALL,orphanRemoval = true)
