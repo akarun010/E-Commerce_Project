@@ -2,22 +2,26 @@ package com.arun.E_Commerce.Project.Service;
 
 import com.arun.E_Commerce.Project.DAO.ProductDAO;
 import com.arun.E_Commerce.Project.Model.Product;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class ProductService {
     @Autowired
     private ProductDAO productDAO;
 
     public String createProduct(Product product) {
         productDAO.save(product);
+        log.info("Product {} Created", product.getId());
         return "Product Created";
     }
 
     public Product getProductById(int id) {
+
         return productDAO.findById(id).orElse(null);
     }
 
