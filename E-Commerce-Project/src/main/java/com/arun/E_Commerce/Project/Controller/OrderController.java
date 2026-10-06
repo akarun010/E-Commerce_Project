@@ -17,7 +17,7 @@ public class OrderController {
     OrderService orderService;
 
     @PostMapping("/orders/{cartId}")
-    public String createOrder(@PathVariable int cartId){
+    public ResponseEntity<String> createOrder(@PathVariable int cartId){
         return  orderService.createOrder(cartId);
     }
 

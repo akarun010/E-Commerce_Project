@@ -2,6 +2,7 @@ package com.arun.E_Commerce.Project.Controller;
 
 import com.arun.E_Commerce.Project.Model.User;
 import com.arun.E_Commerce.Project.Service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/users")
-    public String createUser(@RequestBody User user){
+    public String createUser(@RequestBody @Valid User user){
         return userService.createUser(user);
     }
 
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public ResponseEntity<String> updateUser(@RequestBody User user){
+    public ResponseEntity<String> updateUser(@RequestBody @Valid User user){
         return userService.updateUser(user);
     }
 

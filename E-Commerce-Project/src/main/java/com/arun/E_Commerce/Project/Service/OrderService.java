@@ -31,8 +31,49 @@ public class OrderService {
     private UserDAO userDAO;
 
     @Transactional
-    public String createOrder(int cartId){
+    public ResponseEntity<String> createOrder(int cartId){
+        User user = getAuthUser();
         Cart cart = cartDAO.findById(cartId).orElse(null);
+        if(cart == null){
+            return new ResponseEntity<>("Cart Is Empty", HttpStatus.NOT_FOUND);
+        }
+        if(user.getRole().equals("ADMIN")){
+            return new ResponseEntity<>(handleCreateOrder(cartId, cart), HttpStatus.OK);
+        } else if(user.getRole().equals("USER") && user.getId().equals(cart.getUser().getId())){
+            return new ResponseEntity<>(handleCreateOrder(cartId, cart), HttpStatus.OK);
+        }
+        throw new UnauthorizedAccessException("You are not allowed to create an order");
+    }
+
+    public ResponseEntity<Order> getOrderById(int orderId){
+        Order order = orderDAO.findById(orderId).orElse(null);
+        User user = getAuthUser();
+        if(order == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if(user.getRole().equals("USER") && user.getId().equals(order.getUser().getId())){
+            return new ResponseEntity<>(order, HttpStatus.OK);
+        } else if(user.getRole().equals("ADMIN")){
+            return new ResponseEntity<>(order, HttpStatus.OK);
+        }
+        throw new UnauthorizedAccessException("You are not allowed to access this order");
+    }
+
+    public ResponseEntity<List<Order>> getAllOrders(){
+        User user = getAuthUser();
+        if(user.getRole().equals("ADMIN")){
+            return new ResponseEntity<>(orderDAO.findAll(), HttpStatus.OK);
+        }
+        throw new UnauthorizedAccessException("You are not allowed to access all the orders");
+    }
+
+    public User getAuthUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return userDAO.findByEmail(email);
+    }
+
+    public String handleCreateOrder(int cartId, Cart cart){
         List<CartItem> cartItem = cartItemDAO.findAllByCartId(cartId);
         if(cart != null && !cartItem.isEmpty()){
             BigDecimal total = BigDecimal.ZERO;
@@ -71,33 +112,5 @@ public class OrderService {
             return "Order Creation Successful";
         }
         return "Cart Is Empty";
-    }
-
-    public ResponseEntity<Order> getOrderById(int orderId){
-        Order order = orderDAO.findById(orderId).orElse(null);
-        User user = getAuthUser();
-        if(order == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        if(user.getRole().equals("USER") && user.getId().equals(order.getUser().getId())){
-            return new ResponseEntity<>(order, HttpStatus.OK);
-        } else if(user.getRole().equals("ADMIN")){
-            return new ResponseEntity<>(order, HttpStatus.OK);
-        }
-        throw new UnauthorizedAccessException("You are not allowed to access this order");
-    }
-
-    public ResponseEntity<List<Order>> getAllOrders(){
-        User user = getAuthUser();
-        if(user.getRole().equals("ADMIN")){
-            return new ResponseEntity<>(orderDAO.findAll(), HttpStatus.OK);
-        }
-        throw new UnauthorizedAccessException("You are not allowed to access all the orders");
-    }
-
-    public User getAuthUser(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        return userDAO.findByEmail(email);
     }
 }
