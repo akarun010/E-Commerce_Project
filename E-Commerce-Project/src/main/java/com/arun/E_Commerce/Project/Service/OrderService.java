@@ -4,6 +4,7 @@ import com.arun.E_Commerce.Project.DAO.*;
 import com.arun.E_Commerce.Project.Exception.UnauthorizedAccessException;
 import com.arun.E_Commerce.Project.Model.*;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@Slf4j
 public class OrderService {
     @Autowired
     private OrderDAO orderDAO;
@@ -35,13 +37,17 @@ public class OrderService {
         User user = getAuthUser();
         Cart cart = cartDAO.findById(cartId).orElse(null);
         if(cart == null){
-            return new ResponseEntity<>("Cart Is Empty", HttpStatus.NOT_FOUND);
+            log.warn("Cart {} Is Not Found", cartId);
+            return new ResponseEntity<>("Cart Is Not Found", HttpStatus.NOT_FOUND);
         }
         if(user.getRole().equals("ADMIN")){
-            return new ResponseEntity<>(handleCreateOrder(cartId, cart), HttpStatus.OK);
+            log.info("Admin Creating Order For Cart Number {}" , cartId);
+            return new ResponseEntity<>(handleCreateOrder(cartId, cart), HttpStatus.CREATED);
         } else if(user.getRole().equals("USER") && user.getId().equals(cart.getUser().getId())){
-            return new ResponseEntity<>(handleCreateOrder(cartId, cart), HttpStatus.OK);
+            log.info("Creating Order For Cart Number {}" , cartId);
+            return new ResponseEntity<>(handleCreateOrder(cartId, cart), HttpStatus.CREATED);
         }
+        log.warn("You are not allowed to create an order");
         throw new UnauthorizedAccessException("You are not allowed to create an order");
     }
 
@@ -49,21 +55,27 @@ public class OrderService {
         Order order = orderDAO.findById(orderId).orElse(null);
         User user = getAuthUser();
         if(order == null){
+            log.warn("Order {} Is Not Found", orderId);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         if(user.getRole().equals("USER") && user.getId().equals(order.getUser().getId())){
+            log.info("User Accessing Order By Id {}" , orderId);
             return new ResponseEntity<>(order, HttpStatus.OK);
         } else if(user.getRole().equals("ADMIN")){
+            log.info("Accessing Order By Id {}" , orderId);
             return new ResponseEntity<>(order, HttpStatus.OK);
         }
+        log.warn("You are not allowed to access this order");
         throw new UnauthorizedAccessException("You are not allowed to access this order");
     }
 
     public ResponseEntity<List<Order>> getAllOrders(){
         User user = getAuthUser();
         if(user.getRole().equals("ADMIN")){
+            log.info("Admin Accessing All The Orders");
             return new ResponseEntity<>(orderDAO.findAll(), HttpStatus.OK);
         }
+        log.warn("You are not allowed to access all the order");
         throw new UnauthorizedAccessException("You are not allowed to access all the orders");
     }
 
@@ -88,6 +100,7 @@ public class OrderService {
                     order.setAmount(total);
                 }
                 else{
+                    log.warn("Insufficient stock for product {}" , product.getId());
                     return "Insufficient Stock";
                 }
             }
@@ -109,8 +122,10 @@ public class OrderService {
                 productDAO.save(product);
                 cartItemDAO.deleteById(c.getId());
             }
+            log.info("Order Creation Successful");
             return "Order Creation Successful";
         }
-        return "Cart Is Empty";
+        log.warn("Order Is Not Found");
+        return "Cart Is Not Found";
     }
 }
