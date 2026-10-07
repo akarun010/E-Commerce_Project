@@ -30,8 +30,6 @@ The project follows a layered architecture and uses Spring Data JPA/Hibernate fo
 
 ## 🖼️ Project Architecture
 
-![Project Architecture](images/architecture.png)
-
 The application follows a layered architecture:
 
 ```text
@@ -92,8 +90,6 @@ Security, validation, logging, and testing work across the application.
 ---
 
 # 🗄️ Database Design
-
-![Database ER Diagram](images/database-erd.png)
 
 The project contains **7 main entities**:
 
@@ -233,8 +229,6 @@ Orders are created from the user's cart.
 
 ### Order Creation Flow
 
-![Order Flow](images/order-flow.png)
-
 ```text
 Cart
  ↓
@@ -270,8 +264,6 @@ Order Created
 ---
 
 # 🔐 Security
-
-![JWT Authentication Flow](images/jwt-flow.png)
 
 The application uses **Spring Security and JWT** for authentication and authorization.
 
@@ -345,7 +337,6 @@ An administrator can perform administrative operations such as:
 
 # 🧪 Unit Testing
 
-![Testing](images/testing.png)
 
 The application uses **JUnit 5 and Mockito** for service-layer unit testing.
 
