@@ -66,7 +66,7 @@ class CartServiceTest {
     }
 
     @Test
-    void viewCart() {
+    void viewCartTest() {
         when(authentication.getName()).thenReturn("user@gmail.com");
         when(userDAO.findByEmail("user@gmail.com")).thenReturn(user);
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -78,17 +78,17 @@ class CartServiceTest {
     }
 
     @Test
-    void addToCart() {
+    void addToCartTest() {
         when(authentication.getName()).thenReturn("user@gmail.com");
         when(userDAO.findByEmail("user@gmail.com")).thenReturn(user);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         when(cartDAO.findById(2)).thenReturn(Optional.of(cart));
         when(productDAO.findById(2)).thenReturn(Optional.of(product));
-        //when(cartItemDAO.findByProductAndCart(product, cart)).thenReturn(Optional.of(cartItem));
+//        when(cartItemDAO.findByProductAndCart(product, cart)).thenReturn(Optional.of(cartItem));
     }
 
     @Test
-    void updateQuantity() {
+    void updateQuantityTest() {
         when(authentication.getName()).thenReturn("user@gmail.com");
         when(userDAO.findByEmail("user@gmail.com")).thenReturn(user);
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -101,7 +101,7 @@ class CartServiceTest {
     }
 
     @Test
-    void deleteCartItem() {
+    void deleteCartItemTest() {
         when(authentication.getName()).thenReturn("user@gmail.com");
         when(userDAO.findByEmail("user@gmail.com")).thenReturn(user);
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -122,5 +122,16 @@ class CartServiceTest {
         assertEquals(user, result);
         verify(authentication).getName();
         verify(userDAO).findByEmail("user@gmail.com");
+    }
+
+    @Test
+    void cartTest(){
+        when(authentication.getName()).thenReturn("user@gmail.com");
+        when(userDAO.findByEmail("user@gmail.com")).thenReturn(user);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        when(cartDAO.findById(99)).thenReturn(Optional.empty());
+        ResponseEntity<Cart> result = cartService.viewCart(99);
+        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        verify(cartDAO).findById(99);
     }
 }
