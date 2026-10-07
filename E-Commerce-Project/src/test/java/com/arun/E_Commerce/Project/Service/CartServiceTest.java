@@ -128,7 +128,7 @@ class CartServiceTest {
     }
 
     @Test
-    void cartTest(){
+    void viewCartNotFoundTest(){
         when(authentication.getName()).thenReturn("user@gmail.com");
         when(userDAO.findByEmail("user@gmail.com")).thenReturn(user);
         SecurityContextHolder.getContext().setAuthentication(authentication);
