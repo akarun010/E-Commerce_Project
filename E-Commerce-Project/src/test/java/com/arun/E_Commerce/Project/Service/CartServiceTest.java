@@ -21,8 +21,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CartServiceTest {
@@ -84,7 +83,11 @@ class CartServiceTest {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         when(cartDAO.findById(2)).thenReturn(Optional.of(cart));
         when(productDAO.findById(2)).thenReturn(Optional.of(product));
-//        when(cartItemDAO.findByProductAndCart(product, cart)).thenReturn(Optional.of(cartItem));
+        doReturn(Optional.of(cartItem)).when(cartItemDAO.findByProductAndCart(product, cart));
+        ResponseEntity<String> result = cartService.addToCart(2, 2, 3);
+        assertEquals("Cart Added", result.getBody());
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        verify(cartDAO).save(cart);
     }
 
     @Test
