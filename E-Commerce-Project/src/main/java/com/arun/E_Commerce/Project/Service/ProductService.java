@@ -21,17 +21,24 @@ public class ProductService {
     }
 
     public Product getProductById(int id) {
-
-        return productDAO.findById(id).orElse(null);
+        Product product = productDAO.findById(id).orElse(null);
+        if(product == null){
+            log.warn("Product {} Not Found", id);
+            return null;
+        }
+        log.info("Product {} Is Accessed", id);
+        return product;
     }
 
     public List<Product> getAllProducts() {
+        log.info("All Products Are Accessed");
         return productDAO.findAll();
     }
 
     public String updateProduct(Product product) {
         Product exsistingProduct = productDAO.findById(product.getId()).orElse(null);
         if (exsistingProduct == null) {
+            log.warn("Product {} Not Found", product.getId());
             return "Product Not Found";
         }
         exsistingProduct.setName(product.getName());
@@ -41,11 +48,18 @@ public class ProductService {
         exsistingProduct.setCreatedAt(product.getCreatedAt());
         exsistingProduct.setCategory(product.getCategory());
         productDAO.save(exsistingProduct);
+        log.info("Product {} Updated", product.getId());
         return "Product Updated";
     }
 
     public String deleteProduct(int id) {
+        Product exsistingProduct = productDAO.findById(id).orElse(null);
+        if(exsistingProduct == null){
+            log.warn("Product {} Not Found", id);
+            return "Product Not Found";
+        }
         productDAO.deleteById(id);
+        log.info("Product {} Deleted", id);
         return "Product Deleted";
     }
 }

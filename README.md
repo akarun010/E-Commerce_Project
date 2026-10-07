@@ -1,613 +1,700 @@
 # 🛒 E-Commerce Backend API
 
-A backend REST API for an E-Commerce application built using **Java, Spring Boot, Spring Data JPA, Hibernate, and MySQL**.
+A backend-only **E-Commerce REST API** built with **Java and Spring Boot** as a hands-on full-stack development learning project.
 
-The project provides APIs for managing users, categories, products, shopping carts, cart items, and orders, with stock management and transactional order processing.
+The project focuses on building a real-world backend using **REST APIs, Spring Data JPA, Hibernate, MySQL, Spring Security, JWT authentication, role-based authorization, validation, exception handling, logging, and unit testing with JUnit and Mockito**.
 
 ---
 
 ## 🚀 Features
 
-* User management
-* Category management 
-* Product management
-* Shopping cart management 
-* Add/update/remove cart items
-* Order creation and management
-* Automatic order total calculation
-* Product stock validation
-* Automatic stock reduction after order placement
-* Cart cleanup after successful checkout
-* Order item price snapshot
-* Database relationships using JPA/Hibernate
-* Transactional order processing
-* RESTful API architecture
-* MySQL database integration
-* Maven project management
+### 👤 User Management
+- User registration
+- User authentication
+- BCrypt password encryption
+- Get user details
+- Update user details
+- Delete users
+- Role-based access control
+- User ownership authorization
 
-### 🔐 Planned Security Features
+### 📂 Category Management
+- Create category
+- Get category by ID
+- Get all categories
+- Update category
+- Delete category
+- Admin-only modification operations
 
-* Spring Security
-* BCrypt password encryption
-* JWT authentication
-* Role-based authorization
-* Admin/customer access control
+### 📦 Product Management
+- Create product
+- Get product by ID
+- Get all products
+- Update product
+- Delete product
+- Product quantity/stock management
+- Category-based product relationship
+
+### 🛒 Cart Management
+- Create cart for users
+- Add products to cart
+- Update cart item quantity
+- Remove products from cart
+- View cart
+- Stock validation
+- Prevent unauthorized cart access
+- Admin access where applicable
+
+### 🧾 Order Management
+- Create orders from cart
+- Generate order items
+- Calculate order amount
+- Store purchase-time product price
+- Reduce product stock after order creation
+- Clear ordered cart items
+- View individual orders
+- Admin access to all orders
+- User ownership validation
+
+### 🔐 Security
+- Spring Security
+- JWT authentication
+- BCrypt password hashing
+- Stateless authentication
+- Role-based authorization
+- `USER` and `ADMIN` roles
+- Resource ownership authorization
+
+### 🧪 Testing
+Unit testing using:
+
+- JUnit 5
+- Mockito
+- Arrange → Act → Assert pattern
+- Mockito `@Mock`
+- Mockito `@InjectMocks`
+- `when()`
+- `verify()`
+- `Optional.of()`
+- `Optional.empty()`
+- Authentication mocking with `SecurityContextHolder`
+
+Service-layer tests have been implemented for:
+
+- ProductService ✅
+- CategoryService ✅
+- UserService ✅
+- OrderService ✅
 
 ---
 
-## 🛠️ Technologies Used
+## 🛠️ Tech Stack
 
-| Technology      | Purpose               |
-| --------------- | --------------------- |
-| Java            | Backend programming   |
-| Spring Boot     | Application framework |
-| Spring MVC      | REST API development  |
-| Spring Data JPA | Database access       |
-| Hibernate       | ORM                   |
-| MySQL           | Database              |
-| Maven           | Dependency management |
-| Lombok          | Boilerplate reduction |
-| Postman         | API testing           |
-| Git & GitHub    | Version control       |
+### Backend
+- Java
+- Spring Boot
+- Spring MVC
+- Spring Data JPA
+- Hibernate
+- Spring Security
+- JWT
+- BCrypt
+
+### Database
+- MySQL
+
+### Testing
+- JUnit 5
+- Mockito
+- Spring Boot Starter Test
+
+### Build Tool
+- Maven
+
+### API Testing
+- Postman
+
+### Development Tools
+- Eclipse / IDE
+- Git
+- GitHub
+
+### Logging
+- SLF4J
+- Logback
+- `@Slf4j`
 
 ---
 
 ## 🏗️ Project Architecture
 
-```text
-Client / Postman
-       ↓
-   Controller
-       ↓
-     Service
-       ↓
-   Repository / DAO
-       ↓
-     JPA / Hibernate
-       ↓
-      MySQL
-```
-
-### Project Structure
+The project follows a layered backend architecture:
 
 ```text
-src
-└── main
-    └── java
-        └── com.arun.E_Commerce.Project
-            ├── Controller
-            │   ├── UserController
-            │   ├── CategoryController
-            │   ├── ProductController
-            │   ├── CartController
-            │   └── OrderController
-            │
-            ├── Service
-            │   ├── UserService
-            │   ├── CategoryService
-            │   ├── ProductService
-            │   ├── CartService
-            │   └── OrderService
-            │
-            ├── DAO
-            │   ├── UserDAO
-            │   ├── CategoryDAO
-            │   ├── ProductDAO
-            │   ├── CartDAO
-            │   ├── CartItemDAO
-            │   ├── OrderDAO
-            │   └── OrderItemDAO
-            │
-            └── Model
-                ├── User
-                ├── Category
-                ├── Product
-                ├── Cart
-                ├── CartItem
-                ├── Order
-                └── OrderItem
+Controller
+    ↓
+Service
+    ↓
+DAO / Repository
+    ↓
+JPA / Hibernate
+    ↓
+MySQL
 ```
+
+### Main Layers
+
+**Controller Layer**
+- Handles HTTP requests
+- Maps REST endpoints
+- Receives request data
+- Returns HTTP responses
+
+**Service Layer**
+- Contains business logic
+- Performs validation
+- Handles authorization/ownership logic
+- Communicates with repositories
+
+**DAO / Repository Layer**
+- Handles database operations
+- Uses Spring Data JPA
+
+**Model / Entity Layer**
+- Represents database tables
+- Defines entity relationships
+
+**Security Layer**
+- JWT authentication
+- User authentication
+- Role-based authorization
+- Security filters
 
 ---
 
-# 🗄️ Database Design
+## 🗃️ Database Entities
 
-The application uses **MySQL**.
-
-### Main Tables
-
-```text
-users
-categories
-products
-cart
-cart_item
-orders
-order_items
-```
-
-### Relationships
+The project contains the following main entities:
 
 ```text
 User
+Cart
+Category
+Product
+CartItem
+Order
+OrderItem
+```
+
+### Entity Relationships
+
+```text
+User
+ │
  ├── 1 : 1 ── Cart
- └── 1 : N ── Order
+ │              │
+ │              └── 1 : Many ── CartItem
+ │                                │
+ │                                └── Many : 1 ── Product
+ │
+ └── 1 : Many ── Order
+                    │
+                    └── 1 : Many ── OrderItem
+                                      │
+                                      └── Many : 1 ── Product
 
 Category
- └── 1 : N ── Product
-
-Cart
- └── 1 : N ── CartItem
-
-Product
- ├── 1 : N ── CartItem
- └── 1 : N ── OrderItem
-
-Order
- └── 1 : N ── OrderItem
+   │
+   └── 1 : Many ── Product
 ```
 
 ---
 
-# 👤 User Module
+## 🔑 Authentication Flow
 
-Provides basic user CRUD operations.
+The application uses JWT-based stateless authentication.
 
-### Endpoints
+```text
+User Login
+    ↓
+Credentials Verified
+    ↓
+JWT Generated
+    ↓
+Client Sends JWT
+    ↓
+JWT Filter
+    ↓
+Token Validation
+    ↓
+SecurityContextHolder
+    ↓
+Authenticated Request
+```
 
-```http
+Protected APIs require a valid JWT token.
+
+Example:
+
+```text
+Authorization: Bearer <JWT_TOKEN>
+```
+
+---
+
+## 👥 Roles
+
+The application supports two main roles:
+
+### USER
+
+Users can:
+
+- Access their own account
+- Manage their own cart
+- Create orders for their cart
+- Access their own resources
+
+### ADMIN
+
+Admins can:
+
+- Manage products
+- Manage categories
+- Access users
+- Access orders
+- Perform administrative operations
+
+Authorization is handled through both **Spring Security configuration** and service-level ownership checks.
+
+---
+
+## 📡 API Modules
+
+### User APIs
+
+```text
 POST   /users
-GET    /users/{userId}
+GET    /users/{id}
 GET    /users
-PUT    /users
-DELETE /users/{userId}
+PUT    /users/{id}
+DELETE /users/{id}
 ```
 
-User information includes:
-
-* Name
-* Email
-* Password
-* Phone
-* Address
-* Role
-
-> Password encryption and authentication will be handled through Spring Security and BCrypt.
-
----
-
-# 🏷️ Category Module
-
-Categories are used to organize products.
-
-Example:
+### Category APIs
 
 ```text
-Electronics
-Clothing
-Books
+POST   /categories
+GET    /categories/{id}
+GET    /categories
+PUT    /categories/{id}
+DELETE /categories/{id}
 ```
 
-Categories have a one-to-many relationship with products.
-
----
-
-# 📦 Product Module
-
-Products contain:
-
-* Name
-* Description
-* Price
-* Quantity
-* Category
-* Created date
-
-The product quantity represents the available stock.
-
-Example:
+### Product APIs
 
 ```text
-Product: Mechanical Keyboard
-Price: ₹1500
-Stock: 10
+POST   /products
+GET    /products/{id}
+GET    /products
+PUT    /products/{id}
+DELETE /products/{id}
 ```
-
----
-
-# 🛒 Cart Module
-
-Each user has one shopping cart.
-
-A cart can contain multiple cart items.
 
 ### Cart APIs
 
-```http
-GET    /cart/{cartId}
-
-POST   /cart/{cartId}/product/{productId}/quantity/{quantity}
-
-PUT    /cart/{cartItemId}/quantity/{quantity}
-
-DELETE /cart/{cartItemId}
+```text
+GET    /carts/{id}
+POST   /carts/{id}/items
+PUT    /carts/{id}/items/{itemId}
+DELETE /carts/{id}/items/{itemId}
 ```
 
-### Cart Example
+### Order APIs
 
 ```text
-Cart
- ├── Keyboard × 2
- ├── Mouse × 1
- └── Headset × 1
+POST   /orders/{cartId}
+GET    /orders/{orderId}
+GET    /orders
 ```
 
-The application prevents users from adding more products than the available stock.
+> Endpoint paths may vary slightly depending on the final controller mappings.
 
 ---
 
-# 📋 Order Module
+## 🧮 Order Creation Flow
 
-The Order module handles the checkout process.
-
-### APIs
-
-```http
-POST /orders/{cartId}
-
-GET  /orders/{orderId}
-
-GET  /orders
-```
-
-## Order Creation Flow
+When a user creates an order:
 
 ```text
 Cart
-  ↓
+ ↓
 Get Cart Items
-  ↓
-Check Stock
-  ↓
-Calculate Total
-  ↓
+ ↓
+Check Product Stock
+ ↓
+Calculate Total Amount
+ ↓
 Create Order
-  ↓
-Create Order Items
-  ↓
+ ↓
+Create OrderItems
+ ↓
 Reduce Product Stock
-  ↓
-Remove Purchased Cart Items
+ ↓
+Delete CartItems
+ ↓
+Order Created
 ```
 
-The entire process is handled inside a transaction using:
+The `OrderItem` stores the product price at the time of purchase.
+
+This prevents the order's historical price from changing when the product's current price changes later.
+
+---
+
+## 🔒 Validation & Exception Handling
+
+The project includes:
+
+- Request validation
+- Stock validation
+- Authentication checks
+- Authorization checks
+- Ownership checks
+- Resource-not-found handling
+- Unauthorized-access handling
+- Global exception handling
+
+---
+
+## 📝 Logging
+
+Logging is implemented using:
+
+```text
+SLF4J
+Logback
+@Slf4j
+```
+
+Different log levels are used depending on the situation:
+
+```text
+INFO   → Successful operations
+WARN   → Invalid/unauthorized situations
+DEBUG  → Debugging information
+ERROR  → Application errors
+```
+
+Example operations that are logged:
+
+- User authentication
+- Product operations
+- Cart operations
+- Order creation
+- Unauthorized access
+- Missing resources
+- Insufficient stock
+
+---
+
+## 🧪 Unit Testing
+
+The project uses **JUnit 5 and Mockito** for service-layer unit testing.
+
+Testing follows:
+
+```text
+Arrange
+   ↓
+Act
+   ↓
+Assert
+   ↓
+Verify
+```
+
+Example testing concepts used:
 
 ```java
-@Transactional
+@Mock
+@InjectMocks
+when()
+verify()
+assertEquals()
+assertNull()
+Optional.of()
+Optional.empty()
 ```
 
-This helps keep the order creation process consistent if an operation fails.
-
----
-
-# 💰 Order Calculation
-
-The order total is calculated using `BigDecimal`.
-
-For example:
+Authentication-dependent services are tested by mocking:
 
 ```text
-Keyboard
-Price = ₹1500
-Quantity = 2
-
-1500 × 2 = ₹3000
+Authentication
+       ↓
+SecurityContextHolder
+       ↓
+UserDAO
+       ↓
+Authenticated User
 ```
 
-The final order amount is stored in the `orders` table.
-
----
-
-# 📸 Price Snapshot
-
-`OrderItem` stores the product price at the time of purchase.
-
-Example:
+### Current Testing Progress
 
 ```text
-Product price today = ₹1500
-
-OrderItem
-price = ₹1500
-quantity = 2
-```
-
-If the product price later changes to ₹1800, the old order still retains the original purchase price of ₹1500.
-
----
-
-# 📦 Stock Management
-
-Before placing an order, the application checks whether sufficient stock exists.
-
-```text
-Available stock = 10
-Requested quantity = 3
-
-10 >= 3
-      ↓
-Order allowed
-```
-
-After the order:
-
-```text
-10 - 3 = 7
-```
-
-The product stock is updated automatically.
-
----
-
-# 🧪 API Testing
-
-The APIs can be tested using **Postman**.
-
-Recommended testing flow:
-
-```text
-1. Create User
-       ↓
-2. Create Category
-       ↓
-3. Create Product
-       ↓
-4. Create Cart
-       ↓
-5. Add Product to Cart
-       ↓
-6. View Cart
-       ↓
-7. Create Order
-       ↓
-8. Check Order
-       ↓
-9. Verify Stock
-       ↓
-10. Verify Cart Items
+ProductServiceTest   ✅
+CategoryServiceTest  ✅
+UserServiceTest      ✅
+OrderServiceTest     ✅
+CartServiceTest      ⏳
 ```
 
 ---
 
-# 🔐 Security Roadmap
+## 🧰 Running the Project
 
-The project is designed to support authentication and authorization.
-
-Planned security implementation:
-
-```text
-Spring Security
-      ↓
-BCrypt Password Hashing
-      ↓
-JWT Authentication
-      ↓
-JWT Filter
-      ↓
-Role-Based Authorization
-```
-
-Roles:
-
-```text
-USER
-ADMIN
-```
-
-Example future access control:
-
-```text
-USER
- ├── Manage own cart
- ├── Create orders
- └── View own orders
-
-ADMIN
- ├── Manage products
- ├── Manage categories
- ├── View orders
- └── Update order status
-```
-
----
-
-# ⚠️ Validation & Exception Handling
-
-The project will use validation and centralized exception handling for cases such as:
-
-* Invalid user data
-* Invalid product data
-* Product not found
-* Cart not found
-* Order not found
-* Insufficient stock
-* Invalid quantities
-* Invalid IDs
-
-A global exception handler will provide consistent API error responses.
-
----
-
-# 📝 Logging
-
-Application logging will be used to track important backend operations and errors.
-
-Logging will help with:
-
-* Request processing
-* Business operations
-* Database-related errors
-* Exceptions
-* Debugging
-
----
-
-# 🧪 Unit Testing
-
-The project is designed to include:
-
-* JUnit
-* Mockito
-* Service-layer unit testing
-* Repository interaction testing
-* Exception scenario testing
-
-Important test cases include:
-
-```text
-Create User
-Create Product
-Add Product to Cart
-Insufficient Stock
-Create Order
-Stock Reduction
-Empty Cart
-Invalid Order ID
-```
-
----
-
-# ⚙️ Setup & Installation
-
-## 1. Clone the Repository
+### 1. Clone the repository
 
 ```bash
-git clone <your-github-repository-url>
+git clone <your-repository-url>
 ```
 
-## 2. Open the Project
+### 2. Open the project
 
-Open the project in:
+Open the project using your preferred Java IDE.
 
-```text
-IntelliJ IDEA
-Eclipse
-VS Code
-```
+### 3. Configure MySQL
 
-## 3. Configure MySQL
+Create a MySQL database.
 
-Create a database:
+Example:
 
 ```sql
 CREATE DATABASE ecommerce;
 ```
 
-Update your Spring Boot database configuration with your MySQL credentials.
+### 4. Configure application properties
 
-Example:
+Set your database configuration:
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/ecommerce
-spring.datasource.username=your_username
-spring.datasource.password=your_password
+spring.datasource.username=YOUR_USERNAME
+spring.datasource.password=YOUR_PASSWORD
 ```
 
-## 4. Build the Project
+Configure the remaining Spring Boot properties according to your local environment.
+
+### 5. Build the project
 
 ```bash
 mvn clean install
 ```
 
-## 5. Run the Application
+### 6. Run the application
 
-Run the Spring Boot application.
+```bash
+mvn spring-boot:run
+```
 
-Default URL:
+Or run the main Spring Boot application class directly from your IDE.
+
+---
+
+## 🧪 Testing APIs with Postman
+
+The APIs can be tested using Postman.
+
+Typical testing flow:
 
 ```text
-http://localhost:8080
+1. Register User
+       ↓
+2. Login
+       ↓
+3. Receive JWT
+       ↓
+4. Add JWT to Authorization Header
+       ↓
+5. Create/View Products
+       ↓
+6. Create/View Cart
+       ↓
+7. Add Products to Cart
+       ↓
+8. Create Order
+       ↓
+9. Verify Stock
+       ↓
+10. Verify Order
 ```
 
 ---
 
-# 🔗 API Overview
+## 📁 Project Structure
 
-| Module | Method | Endpoint                                                 |
-| ------ | ------ | -------------------------------------------------------- |
-| User   | POST   | `/users`                                                 |
-| User   | GET    | `/users/{userId}`                                        |
-| User   | GET    | `/users`                                                 |
-| User   | PUT    | `/users`                                                 |
-| User   | DELETE | `/users/{userId}`                                        |
-| Cart   | GET    | `/cart/{cartId}`                                         |
-| Cart   | POST   | `/cart/{cartId}/product/{productId}/quantity/{quantity}` |
-| Cart   | PUT    | `/cart/{cartItemId}/quantity/{quantity}`                 |
-| Cart   | DELETE | `/cart/{cartItemId}`                                     |
-| Order  | POST   | `/orders/{cartId}`                                       |
-| Order  | GET    | `/orders/{orderId}`                                      |
-| Order  | GET    | `/orders`                                                |
+```text
+src
+ └── main
+      └── java
+           └── com.arun.E_Commerce.Project
+                │
+                ├── Controller
+                │
+                ├── Service
+                │
+                ├── DAO
+                │
+                ├── Model
+                │
+                ├── Security
+                │
+                ├── Exception
+                │
+                └── ...
+```
 
----
+Tests:
 
-# 🎯 Project Goals
-
-This project demonstrates practical experience with:
-
-* Java backend development
-* Spring Boot
-* REST API development
-* Layered architecture
-* Spring Data JPA
-* Hibernate
-* MySQL
-* Entity relationships
-* Transaction management
-* E-Commerce business logic
-* Stock management
-* API testing
-* Git & GitHub
-
----
-
-# 🚧 Future Improvements
-
-* [ ] Spring Security
-* [ ] BCrypt password encryption
-* [ ] JWT authentication
-* [ ] Role-based authorization
-* [ ] DTOs
-* [ ] Global exception handling
-* [ ] Bean Validation
-* [ ] Logging
-* [ ] JUnit & Mockito tests
-* [ ] Pagination and sorting
-* [ ] Product search/filtering
-* [ ] Admin dashboard APIs
-* [ ] Order status management
-* [ ] API documentation with Swagger/OpenAPI
-* [ ] Docker
-* [ ] Deployment
-* [ ] CI/CD
+```text
+src
+ └── test
+      └── java
+           └── com.arun.E_Commerce.Project
+                │
+                └── Service
+                     ├── ProductServiceTest
+                     ├── CategoryServiceTest
+                     ├── UserServiceTest
+                     ├── OrderServiceTest
+                     └── CartServiceTest
+```
 
 ---
 
-# 👨‍💻 Author
+## 🎯 Learning Objectives
+
+This project was created to gain practical experience with:
+
+- Building REST APIs with Spring Boot
+- Designing relational databases
+- JPA entity relationships
+- Hibernate ORM
+- Spring Data JPA
+- Layered architecture
+- Authentication and authorization
+- JWT security
+- BCrypt password hashing
+- Role-based access control
+- Ownership-based authorization
+- Input validation
+- Exception handling
+- Logging
+- JUnit
+- Mockito
+- Maven
+- Postman API testing
+- Git and GitHub
+
+---
+
+## 📌 Project Status
+
+### Completed
+
+- [x] Database design
+- [x] Entity creation
+- [x] JPA relationships
+- [x] DAO/Repository layer
+- [x] User management
+- [x] Category management
+- [x] Product management
+- [x] Cart logic
+- [x] Order logic
+- [x] REST controllers
+- [x] JWT authentication
+- [x] BCrypt password hashing
+- [x] Role-based authorization
+- [x] Ownership authorization
+- [x] Validation
+- [x] Exception handling
+- [x] Logging
+- [x] Postman API testing
+- [x] ProductService unit tests
+- [x] CategoryService unit tests
+- [x] UserService unit tests
+- [x] OrderService unit tests
+
+### In Progress
+
+- [ ] CartService unit tests
+- [ ] Final project cleanup
+- [ ] Final API verification
+
+---
+
+## 📚 What I Learned
+
+Through this project, I practiced how different Spring Boot concepts work together in a complete backend application:
+
+```text
+Java
+ ↓
+Spring Boot
+ ↓
+REST API
+ ↓
+JPA / Hibernate
+ ↓
+MySQL
+ ↓
+Spring Security
+ ↓
+JWT
+ ↓
+Validation & Exceptions
+ ↓
+Logging
+ ↓
+JUnit & Mockito
+```
+
+The main goal of the project was not just to create CRUD APIs, but to understand how authentication, authorization, database relationships, business logic, testing, and REST APIs work together in a backend application.
+
+---
+
+## 👨‍💻 Author
 
 **Arun Dev**
 
-Diploma Computer Science Engineering Student
-Java Full Stack Developer
+Diploma Computer Science Engineering Student  
+Java Full Stack Developer — Learning & Building
 
-### Profiles
+### Core Skills
 
-* GitHub: https://github.com/akarun010
-* LinkedIn: https://www.linkedin.com/in/akarunkumar010
+```text
+Java
+Spring Boot
+Spring Data JPA
+Hibernate
+MySQL
+REST APIs
+Spring Security
+JWT
+React
+JavaScript
+HTML
+CSS
+Tailwind CSS
+JUnit
+Mockito
+Maven
+Git
+GitHub
+```
 
 ---
 
-## ⭐ Project Status
+## ⭐ Project Purpose
 
-**Backend Development:** 🚧 In Progress
-
-The core E-Commerce backend modules are implemented, with security, validation, testing, documentation, Docker, and deployment planned as subsequent stages.
+This project is a **learning-focused backend project** created to strengthen practical Java Full Stack development skills and prepare for larger full-stack applications and future projects.
