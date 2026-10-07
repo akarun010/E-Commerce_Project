@@ -83,11 +83,11 @@ class CartServiceTest {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         when(cartDAO.findById(2)).thenReturn(Optional.of(cart));
         when(productDAO.findById(2)).thenReturn(Optional.of(product));
-        doReturn(Optional.of(cartItem)).when(cartItemDAO.findByProductAndCart(product, cart));
+        when(cartItemDAO.findByProductAndCart(product, cart)).thenReturn(cartItem);
         ResponseEntity<String> result = cartService.addToCart(2, 2, 3);
         assertEquals("Cart Added", result.getBody());
         assertEquals(HttpStatus.OK, result.getStatusCode());
-        verify(cartDAO).save(cart);
+        verify(cartItemDAO).save(cartItem);
     }
 
     @Test
